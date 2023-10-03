@@ -122,7 +122,7 @@ function Box({ children }) {
         className="btn-toggle"
         onClick={() => setIsOpen(open => !open)}
       >
-        {isOpen ? '–' : '+'}
+        {isOpen ? '&mdash;' : '+'}
       </button>
       {isOpen && children}
     </div>
