@@ -1,25 +1,9 @@
-import { useState } from 'react'
-
-const tempMovieData = [
-  {
-    imdbID: 'tt1375666',
-    Title: 'Inception',
-    Year: '2010',
-    Poster: 'https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg'
-  },
-  {
-    imdbID: 'tt0133093',
-    Title: 'The Matrix',
-    Year: '1999',
-    Poster: 'https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg'
-  },
-  {
-    imdbID: 'tt6751668',
-    Title: 'Parasite',
-    Year: '2019',
-    Poster: 'https://m.media-amazon.com/images/M/MV5BYWZjMjk3ZTItODQ2ZC00NTY5LWE0ZDYtZTI3MjcwN2Q5NTVkXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_SX300.jpg'
-  }
-]
+import { useEffect, useState } from 'react'
+import Navbar from './components/Navbar'
+import Box from './components/Box'
+import Main from './components/Main'
+import Loader from './components/Loader'
+import NumResults from './components/NumResults'
 
 const tempWatchedData = [
   {
@@ -44,6 +28,8 @@ const tempWatchedData = [
 
 const average = arr => arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0)
 
+const API_KEY = '1b039cef'
+
 function Search() {
   const [query, setQuery] = useState('')
   return (
@@ -54,32 +40,6 @@ function Search() {
       value={query}
       onChange={e => setQuery(e.target.value)}
     />
-  )
-}
-
-function Logo() {
-  return (
-    <div className="logo">
-      <span role="img">🍿</span>
-      <h1>usePopcorn</h1>
-    </div>
-  )
-}
-
-function NumResults({ movies }) {
-  return (
-    <p className="num-results">
-      Found <strong>{movies.length}</strong> results
-    </p>
-  )
-}
-
-function Navbar({ children }) {
-  return (
-    <nav className="nav-bar">
-      <Logo />
-      {children}
-    </nav>
   )
 }
 
@@ -111,21 +71,6 @@ function MovieList({ movies }) {
         />
       ))}
     </ul>
-  )
-}
-
-function Box({ children }) {
-  const [isOpen, setIsOpen] = useState(true)
-  return (
-    <div className="box">
-      <button
-        className="btn-toggle"
-        onClick={() => setIsOpen(open => !open)}
-      >
-        {isOpen ? '&mdash;' : '+'}
-      </button>
-      {isOpen && children}
-    </div>
   )
 }
 
@@ -197,13 +142,21 @@ function WatchedMoviesList({ watched }) {
   )
 }
 
-function Main({ children }) {
-  return <main className="main">{children}</main>
-}
-
 export default function App() {
-  const [movies, setMovies] = useState(tempMovieData)
+  const [movies, setMovies] = useState([])
   const [watched, setWatched] = useState(tempWatchedData)
+  const [isLoading, setIsLoading] = useState(false)
+  const query = 'interstellar'
+  useEffect(() => {
+    async function getData() {
+      setIsLoading(true)
+      const res = await fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`)
+      const data = await res.json()
+      setMovies(data.Search)
+      setIsLoading(false)
+    }
+    getData()
+  }, [])
   return (
     <>
       <Navbar>
@@ -211,9 +164,7 @@ export default function App() {
         <NumResults movies={movies} />
       </Navbar>
       <Main>
-        <Box>
-          <MovieList movies={movies} />
-        </Box>
+        <Box>{isLoading ? <Loader /> : <MovieList movies={movies} />}</Box>
         <Box>
           <WatchedSummary watched={watched} />
           <WatchedMoviesList watched={watched} />
