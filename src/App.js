@@ -7,14 +7,14 @@ import NumResults from './components/NumResults'
 import ErrorMessage from './components/ErrorMessage'
 import Search from './components/Search'
 import MovieDetails from './components/MovieDetails'
-
-const average = arr => arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0)
+import MovieList from './components/MovieList'
+import WatchedMoviesList from './components/WatchedMovieList'
+import WatchedSummary from './components/WatchedSummary'
 
 const API_KEY = process.env.REACT_APP_API_KEY
 
 export default function App() {
   const [movies, setMovies] = useState([])
-  const [movie, setMovie] = useState({})
   const [watched, setWatched] = useState([])
   const [query, setQuery] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -52,7 +52,7 @@ export default function App() {
     setSelectedId(null)
   }
 
-  function handleAddWatched() {
+  function handleAddWatched(movie) {
     setWatched(watched => [...watched, movie])
   }
 
@@ -92,105 +92,5 @@ export default function App() {
         </Box>
       </Main>
     </>
-  )
-}
-
-function Movie({ movie, onSelectMovie }) {
-  return (
-    <li onClick={() => onSelectMovie(movie.imdbID)}>
-      <img
-        src={movie.Poster}
-        alt={`${movie.Title} poster`}
-      />
-      <h3>{movie.Title}</h3>
-      <div>
-        <p>
-          <span>🗓</span>
-          <span>{movie.Year}</span>
-        </p>
-      </div>
-    </li>
-  )
-}
-
-function MovieList({ movies, onSelectMovie }) {
-  return (
-    <ul className="list list-movies">
-      {movies?.map(movie => (
-        <Movie
-          movie={movie}
-          key={movie.imdbID}
-          onSelectMovie={onSelectMovie}
-        />
-      ))}
-    </ul>
-  )
-}
-
-function WatchedSummary({ watched }) {
-  const avgImdbRating = average(watched.map(movie => movie.imdbRating))
-  const avgUserRating = average(watched.map(movie => movie.userRating))
-  const avgRuntime = average(watched.map(movie => movie.runtime))
-  return (
-    <div className="summary">
-      <h2>Movies you watched</h2>
-      <div>
-        <p>
-          <span>#️⃣</span>
-          <span>{watched.length} movies</span>
-        </p>
-        <p>
-          <span>⭐️</span>
-          <span>{avgImdbRating}</span>
-        </p>
-        <p>
-          <span>🌟</span>
-          <span>{avgUserRating}</span>
-        </p>
-        <p>
-          <span>⏳</span>
-          <span>{avgRuntime} min</span>
-        </p>
-      </div>
-    </div>
-  )
-}
-
-function WatchedMovie({ movie }) {
-  return (
-    <li>
-      <img
-        src={movie.Poster}
-        alt={`${movie.Title} poster`}
-      />
-      <h3>{movie.Title}</h3>
-      <div>
-        <p>
-          <span>⭐️</span>
-          <span>{movie.imdbRating}</span>
-        </p>
-        <p>
-          <span>🌟</span>
-          <span>{movie.userRating}</span>
-        </p>
-        <p>
-          <span>⏳</span>
-          <span>{movie.runtime} min</span>
-        </p>
-      </div>
-    </li>
-  )
-}
-
-function WatchedMoviesList({ watched }) {
-  return (
-    <ul className="list">
-      {watched.map(movie => (
-        <WatchedMovie
-          movie={movie}
-          key={movie.imdbID}
-        />
-      ))}
-    </ul>
   )
 }
