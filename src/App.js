@@ -6,11 +6,11 @@ import Loader from './components/Loader'
 import NumResults from './components/NumResults'
 import ErrorMessage from './components/ErrorMessage'
 import Search from './components/Search'
-import SelectedMovie from './components/SelectedMovie'
+import MovieDetails from './components/MovieDetails'
 
 const average = arr => arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0)
 
-const API_KEY = '1b039cef'
+const API_KEY = process.env.REACT_APP_API_KEY
 
 export default function App() {
   const [movies, setMovies] = useState([])
@@ -73,7 +73,7 @@ export default function App() {
         </Box>
         <Box>
           {selectedId ? (
-            <SelectedMovie
+            <MovieDetails
               selectedId={selectedId}
               onCloseMovie={handleCloseMovie}
             />
