@@ -14,6 +14,7 @@ const API_KEY = process.env.REACT_APP_API_KEY
 
 export default function App() {
   const [movies, setMovies] = useState([])
+  const [movie, setMovie] = useState({})
   const [watched, setWatched] = useState([])
   const [query, setQuery] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -51,6 +52,10 @@ export default function App() {
     setSelectedId(null)
   }
 
+  function handleAddWatched() {
+    setWatched(watched => [...watched, movie])
+  }
+
   return (
     <>
       <Navbar>
@@ -76,6 +81,7 @@ export default function App() {
             <MovieDetails
               selectedId={selectedId}
               onCloseMovie={handleCloseMovie}
+              onAddWatched={handleAddWatched}
             />
           ) : (
             <>

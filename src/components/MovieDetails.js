@@ -5,10 +5,22 @@ import Loader from './Loader'
 
 const API_KEY = process.env.REACT_APP_API_KEY
 
-function MovieDetails({ selectedId, onCloseMovie }) {
+function MovieDetails({ selectedId, onCloseMovie, onAddWatched }) {
   const [movie, setMovie] = useState({})
   const [isLoading, setIsLoading] = useState(false)
   const { Title: title, Year: year, Poster: poster, Runtime: runtime, imdbRating, Plot: plot, Released: released, Actors: actors, Director: director, Genre: genre } = movie
+
+  function handleAdd() {
+    const newWatchedMovie = {
+      imdbId: selectedId,
+      title,
+      year,
+      poster,
+      imdbRating: Number(imdbRating),
+      runtime: runtime.split(' ').at(0)
+    }
+    onAddWatched(newWatchedMovie)
+  }
 
   useEffect(() => {
     async function getMovieDetails() {
@@ -52,6 +64,12 @@ function MovieDetails({ selectedId, onCloseMovie }) {
                 maxRating={10}
                 size={24}
               />
+              <button
+                onClick={handleAdd}
+                className="btn-add"
+              >
+                Add to list
+              </button>
             </div>
             <p>
               <em>{plot}</em>
